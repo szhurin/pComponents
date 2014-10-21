@@ -1,147 +1,89 @@
 <?php
 
-$struc = array(
-    '--samples' => array(
-        'type' => 'dir',
-        'contents' => array()
-    ),
-    'assets' => array(
-        'type' => 'dir',
-        'contents' => array(
-            'css' => array(
-                'type' => 'dir',
-                'contents' => array()
-            ),
-            'js' => array(
-                'type' => 'dir',
-                'contents' => array()
-            ),
-        )
-    ),
-    'configs' => array(
-        'type' => 'dir',
-        'contents' => array(
-            '--samples.php' => array(
-                'type' => 'file',
-                'contents' => '<?php return array("real sample file name"=>"requested file name");'
-            ),)
-    ),
-    'controllers' => array(
-        'type' => 'dir',
-        'contents' => array()
-    ),
-    'models' => array(
-        'type' => 'dir',
-        'contents' => array()
-    ),
-    'views' => array(
-        'type' => 'dir',
-        'contents' => array()
-    ),
-    'tests' => array(
-        'type' => 'dir',
-        'contents' => array()
-    ),
-    'SampleComponent.php' => array(
-        'type' => 'file',
-        'contents' => '<?php' . PHP_EOL
-        . '/**
- * SampleComponent - description
- *
- * @author automatic generation tool
- */
+include_once '../vendor/autoload.php';
 
-namespace {{namespace}};
+$struc = new \PComponents\Cli\BasicStructure();
 
-class {{componentName}}Component extends Component {
-
-    public function attach()  { }
-    public function init()  { }
-}
-'
-    ),
-    'Component.php' => array(
-        'type' => 'file',
-        'contents' => '<?php' . PHP_EOL
-        . '/**
- * BaseComponent file
- *
- * @author automatic generation tool
- */
-
-namespace {{namespace}};
-
-class Component extends \PComponents\Core\Component {
-
-    {{class_methods}}
-}
-'
-    ),
-    'Element.php' => array(
-        'type' => 'file',
-        'contents' => '<?php' . PHP_EOL
-        . '/**
- * BaseElement file
- *
- * @author automatic generation tool
- */
-
-namespace {{namespace}};
-
-class Element extends \PComponents\Core\Element {
-
-    {{class_methods}}
-}
-'
-    ),
-);
-$mode = 0775;
-$path = '/';
-$error = '';
-
-function createNode($name, $node)
-{
-    $old_path = $path;
-    $error = '';
-    if (file_exists($path . $name)) {
-        $error .= ' node already exists';
-        return false;
-    }
-
-    if ($node['type'] == 'dir') {
-        if (!mkdir($path . $name, $mode, true)) {
-            die('Не удалось создать директории... ' . $path . $name);
-        }
-        chmod($path . $name, $mode);
-        if (!empty($node['contents'])) {
-            $path += $name .'/';
-            processStruc($node['contents']);
-            $path = $old_path;
-        }
-        return true;
-    } elseif ($node['type'] == 'file') {
-        if (!file_put_contents($path . $name, $node['contents'])) {
-            die('Не удалось создать file... ' . $path . $name);
-        }
-        chmod($path . $name, $mode);
-        return true;
-    }
-
-    $error .= ' unknown node type ' . $node['type'];
-    return false;
-}
 
 $path = getcwd() . '/';
+$pathDir = new \PComponents\Cli\Settings();
+$settings = $pathDir->findFSSettings($path);
 
-function processStruc($structure)
-{
-    foreach ($structure as $name => $node) {
-        if(!createNode($name, $node)){
-            echo $error;
-            exit;
+$mode = 0775;
+
+$params = array('--ns' => '', '--name' => '', '-y' => false);
+
+foreach ($argv as $k => $v) {
+
+    if (isset($params[$v])) {
+        
+        if ($params[$v] === false) {
+            $params[$v] = true;
+        } elseif (isset($argv[$k + 1])) {
+            $params[$v] = $argv[$k + 1];
         }
     }
 }
 
+if (empty($params['--ns'])) {
+    $params['--ns'] = $settings['ns'];
+}
 
-processStruc($struc);
+$cur_dir = $pathDir->getCurrentDirName($path);
+
+$needToCreateDir = false;
+
+if (!empty($params['--name']) && $params['--name'] !== $cur_dir) {
+    $cur_dir = $params['--name'];
+    $needToCreateDir = true;
+    if($settings['__path'] !== false){
+        $params['--ns'] .= str_replace('/', '\\', $settings['__ns_path']) .'\\'.ucfirst($cur_dir);
+    }else{
+        $params['--ns'] .= '\\'.ucfirst($cur_dir);
+    }
+    $path .= $cur_dir . '/';
+}
+
+var_dump($settings);
+
+
+
+if(substr($params['--ns'],0,1) == '\\'){
+    $params['--ns'] = substr($params['--ns'], 1);
+}
+
+$replace['{{namespace}}'] = $params['--ns'];
+$replace['{{componentName}}'] = $cur_dir;
+
+
+
+if ($params['-y'] === false) {
+
+
+    echo "Do you want to create ".PHP_EOL.
+            "Conponent with name '" . $cur_dir ."'".PHP_EOL.
+            " in '" . $path . "'".PHP_EOL.
+            " with namespace '" . $params['--ns'] ."'".PHP_EOL.
+            " Type 'yes'/'y' to continue: ";
+
+    $handle = fopen("php://stdin", "r");
+    $line = fgets($handle);
+    if (trim($line) != 'y' && trim($line) != 'yes') {
+        echo "ABORTING!\n";
+        exit;
+    }
+    echo "\n";
+    echo "Thank you, continuing...\n";
+}
+
+
+ if ($needToCreateDir && !file_exists($cur_dir)) {
+        mkdir($cur_dir);
+        chmod($cur_dir, 0775);
+    }
+
+$creator = new \PComponents\Cli\ComponentCreator($path, $mode);
+
+$ret = $creator->processStruc($struc->struc,   $replace);
+
+echo PHP_EOL . 'Component succesfully created!' . PHP_EOL . PHP_EOL;

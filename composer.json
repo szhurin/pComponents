@@ -1,8 +1,9 @@
 {
     "name": "szhurin/PComponents",
     "autoload": {
-        "psr-0" : {
-            "PComponents" : "src"
+        "psr-0": {
+            "PComponents": "src"
         }
     }
+    
 }
