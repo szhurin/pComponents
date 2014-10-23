@@ -50,10 +50,10 @@ abstract class ComponentRegistration extends ServiceData
     
     public function registerService($sname)
     {
-        if(!$this->isServiceInCollection($name)){
+        if(!$this->isServiceInCollection($sname)){
             return FALSE;
         }
-        $cname = $this->isServiceInCollection($name);
+        $cname = $this->isServiceInCollection($sname);
         
         if(class_exists($cname)){
             $this->registerComponents(array($cname));

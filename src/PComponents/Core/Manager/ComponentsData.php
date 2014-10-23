@@ -130,7 +130,7 @@ abstract class ComponentsData extends Base
                 '<?php return '.var_export(array(
                     'services'=>$services, 
                     'duplicates'=>$duplicatedServices, 
-                    ),true));
+                    ),true).';');
         
         return true;
     }
