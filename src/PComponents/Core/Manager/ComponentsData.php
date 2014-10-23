@@ -51,7 +51,7 @@ abstract class ComponentsData extends Base
 
     public function registerDirectory($path)
     {
-        foreach (new DirectoryIterator($path) as $fileInfo) {
+        foreach (new \DirectoryIterator($path) as $fileInfo) {
             if ($fileInfo->isDot() && !$fileInfo->isDir()) {
                 continue;
             } else {
@@ -83,7 +83,7 @@ abstract class ComponentsData extends Base
             return false;
         }
 
-        foreach (new DirectoryIterator($path) as $fileInfo) {
+        foreach (new \DirectoryIterator($path) as $fileInfo) {
             if ($fileInfo->isDot() && !$fileInfo->isDir()) {
                 continue;
             } else {

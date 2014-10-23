@@ -1,0 +1,63 @@
+#!/bin/bash
+OLD_PATH=$(pwd)
+creating="creating "
+
+
+echo "Make global update"
+#composer global update
+echo "Go to global and update"
+cd ~/.composer/vendor/szhurin/PComponents
+pwd
+
+#composer install
+
+echo "Go to BIN and add commands"
+cd ~/.composer/vendor/bin
+pwd
+
+CUR_PATH=$(pwd)
+
+CreateFName="/_pct_create"
+
+echo $creating$CUR_PATH$CreateFName
+
+if [ ! -f $CUR_PATH$CreateFName ]; then
+    cat  > $CUR_PATH$CreateFName <<"EOF"
+#!/usr/bin/php
+<?php
+
+include realpath(__DIR__.'/..').'/szhurin/PComponents/tools/createComponent.php';
+
+EOF
+fi
+
+chmod 775 $CUR_PATH$CreateFName
+
+CreateFName="/_pct_exports"
+
+echo $creating$CUR_PATH$CreateFName
+
+if [ ! -f $CUR_PATH$CreateFName ]; then
+    cat  > $CUR_PATH$CreateFName <<"EOF"
+#!/usr/bin/php
+<?php
+
+include realpath(__DIR__.'/..').'/szhurin/PComponents/tools/getExports.php';
+
+EOF
+fi
+
+chmod 775 $CUR_PATH$CreateFName
+
+echo
+echo
+
+ls -l
+
+echo " GO BACK ......"
+
+cd $OLD_PATH
+pwd
+
+echo END
+
