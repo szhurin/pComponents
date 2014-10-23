@@ -64,7 +64,7 @@ abstract class ComponentsData extends Base
                     $class = '\\' . $nc . '\\' . $fileInfo->getBasename('.php');
                     if (class_exists($class)) {
 
-                        $this->containerManager->registerComponents(array(
+                        $this->registerComponents(array(
                             $class
                         ));
                     }
@@ -100,7 +100,7 @@ abstract class ComponentsData extends Base
                     var_dump(['no Component', $path . $cname]);
                     continue;
                 }
-                $objects = $this->containerManager->registerComponents(array(
+                $objects = $this->registerComponents(array(
                     $obj
                 ));
 
