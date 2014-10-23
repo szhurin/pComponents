@@ -127,13 +127,17 @@ abstract class ComponentsData extends Base
             return false;
         }
         
+        
         if (!is_file($path . '/Component.php')) {
+            var_dump('ComponentsData including ', $path. '/Component.php');
             include($path . '/Component.php');
+            
         }
         include_once($fname);
         $namespace = $this->getComponentNS($componentDir);
 
-        
+        var_dump(' class '. '\\' . $namespace . '\\' . 'Component' , 
+                class_exists( '\\' . $namespace . '\\' . 'Component'));
 
         $cname = '\\' . $namespace . '\\' . $name . 'Component';
         if (!class_exists($cname)) {
