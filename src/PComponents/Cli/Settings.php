@@ -7,7 +7,7 @@
  */
 
 namespace PComponents\Cli;
-new \PComponents\Tools\Path;
+use \PComponents\Tools\Path;
 /**
  * Description of settings
  *
