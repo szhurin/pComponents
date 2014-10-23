@@ -7,7 +7,7 @@
  */
 
 namespace PComponents\Cli;
-
+new \PComponents\Tools\Path;
 /**
  * Description of settings
  *
@@ -25,7 +25,7 @@ class Settings
         if(empty($settingFileName)){
             $settingFileName = $this->settingFileName;
         }
-        $path = new \PComponents\Tools\Path($dir);
+        $path = new Path($dir);
         $cur_path = $path->getPath();
         // go dows until find or root directory =>  no components in the root
         
@@ -33,7 +33,7 @@ class Settings
         
         
         while(!is_file($cur_path.$settingFileName) && $cur_path !== false ){
-            $cur_dir = $path::getCurrentDirName($cur_path);
+            $cur_dir = Path::getCurrentDirName($cur_path);
             $tmp = $path->Up();
             if($tmp !== $cur_path){
                 $cur_path = $tmp;
