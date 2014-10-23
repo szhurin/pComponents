@@ -126,15 +126,18 @@ abstract class ComponentsData extends Base
         if (!is_file($fname)) {
             return false;
         }
+        
+        if (!is_file($path . '/Component.php')) {
+            include($path . '/Component.php');
+        }
+        include_once($fname);
         $namespace = $this->getComponentNS($componentDir);
 
+        
 
         $cname = '\\' . $namespace . '\\' . $name . 'Component';
         if (!class_exists($cname)) {
-            include_once $fname;
-            if (!class_exists($cname)) {
-                return false;
-            }
+            return false;
         }
         $obj = new $cname;
 
