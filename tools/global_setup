@@ -4,12 +4,12 @@ creating="creating "
 
 
 echo "Make global update"
-#composer global update
+composer global update
 echo "Go to global and update"
 cd ~/.composer/vendor/szhurin/PComponents
 pwd
 
-#composer install
+composer install
 
 echo "Go to BIN and add commands"
 cd ~/.composer/vendor/bin
