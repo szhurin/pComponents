@@ -128,7 +128,7 @@ abstract class ComponentsData extends Base
         }
         
         
-        if (!is_file($path . 'Component.php')) {
+        if (is_file($path . 'Component.php')) {
             var_dump('ComponentsData including ', $path. 'Component.php');
             include($path . 'Component.php');
             
