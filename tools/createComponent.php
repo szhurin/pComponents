@@ -29,7 +29,7 @@ if (empty($params['--ns'])) {
     $params['--ns'] = $settings['ns'];
 }
 
-$cur_dir = $pathDir->getCurrentDirName($path);
+$cur_dir = \PComponents\Tools\Path::getCurrentDirName($path);
 
 $needToCreateDir = false;
 
