@@ -122,18 +122,18 @@ abstract class ComponentsData extends Base
         $path = Path::fixPath($componentDir);
         $name = Path::getCurrentDirName($path);
 
-        $fname = $path . '/' . $name . 'Component.php';
+        $fname = $path . $name . 'Component.php';
         if (!is_file($fname)) {
             return false;
         }
         
         
-        if (!is_file($path . '/Component.php')) {
-            var_dump('ComponentsData including ', $path. '/Component.php');
-            include($path . '/Component.php');
+        if (!is_file($path . 'Component.php')) {
+            var_dump('ComponentsData including ', $path. 'Component.php');
+            include($path . 'Component.php');
             
         }else{
-            var_dump('ComponentsData NOT including ', $path. '/Component.php');
+            var_dump('ComponentsData NOT including ', $path. 'Component.php');
         }
         include_once($fname);
         $namespace = $this->getComponentNS($componentDir);
