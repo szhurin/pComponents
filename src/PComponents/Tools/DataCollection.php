@@ -22,7 +22,7 @@ class DataCollection
     
     public function unsetEntries()
     {
-        $this->entry = array();
+        $this->entryArray = array();
         $this->entry = '';
         $this->entry_code = 0;        
     }
@@ -41,7 +41,7 @@ class DataCollection
     {
         $this->entry = $text;
         $this->entry_code = $code;
-        $this->entry[] = array('code' => $this->entry_code, 'text' => $this->entry); 
+        $this->entryArray[] = array('code' => $this->entry_code, 'text' => $this->entry); 
     }
     
     

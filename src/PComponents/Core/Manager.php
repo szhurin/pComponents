@@ -22,6 +22,8 @@ class Manager extends Manager\ComponentRegistration
         $this->c = $c;
 
         $c->setManager($this);
-    }
+        
+        parent::__construct();
+        }
 
 }

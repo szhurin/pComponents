@@ -12,7 +12,7 @@ use PComponents\Tools\Path;
 abstract class ComponentRegistration extends ServiceData
 {
 
-    private $componetRegistry = array();    // the array  componentName => component
+    private $componetRegistry  = array();    // the array  componentName => component
     private $serviceCollection = array();
 
     /**
@@ -33,39 +33,58 @@ abstract class ComponentRegistration extends ServiceData
             $services = include_once $sfname;
 
             $common = array_intersect_assoc($this->serviceCollection,
-                                            $services);
+                                            $services['services']);
             if (!empty($common)) {
                 throw new \PComponents\Exceptions\ServiceRegistrationException(
                 'The services ' . implode(':',
                                           array_keys($common)) .
                 ' are redefined in ' . implode(':',
                                                array_values($common)),
-                        1
+                                                            1
                 );
             }
-            
-            $this->serviceCollection = array_merge($this->serviceCollection, $services);
+
+            $this->serviceCollection = array_merge($this->serviceCollection,
+                                                   $services['services']);
         }
     }
-    
+
     public function registerService($sname)
     {
-        if(!$this->isServiceInCollection($sname)){
+        if (!$this->isServiceInCollection($sname)) {
+            $this->setError(
+                    'Service "' . $sname .
+                    '"is not in collection ' . var_export($this->serviceCollection,
+                                                          true),
+                                                          1);
             return FALSE;
         }
-        $cname = $this->isServiceInCollection($sname);
-        
-        if(class_exists($cname)){
+        $cname = $this->getServiceInCollection($sname);
+
+        if (class_exists($cname)) {
             $this->registerComponents(array($cname));
             return true;
         }
+
+        $this->setError(
+                'Class "' . $cname .
+                '" for service "' . $sname .
+                '" does not exist ',
+                2);
         return false;
-        
     }
-    
+
     public function isServiceInCollection($sname)
     {
+
         return isset($this->serviceCollection[$sname]);
+    }
+
+    public function getServiceInCollection($sname)
+    {
+        $ret = ($this->isServiceInCollection($sname)) ?
+                $this->serviceCollection[$sname] : null;
+        return $ret;
     }
 
     /**

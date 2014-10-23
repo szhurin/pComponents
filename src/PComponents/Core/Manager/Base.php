@@ -40,7 +40,7 @@ abstract class Base extends \PComponents\Core\Obj\Base
             
             $this->manager->addExport($name, $this); 
         }  else {
-            var_dump([$this->cname, 'noreg', $name]);
+            $this->setError(' noreg service '.$name . ' in component '. $this->cname);
         }      
     }
 
