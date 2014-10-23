@@ -43,9 +43,10 @@ abstract class ComponentRegistration extends ServiceData
                 }
                 $objects[] = $obj;
                 $this->componetRegistry[$obj->cname] = $obj; // save components in array
-            } else {
+            } else {// already have the object of this type
                 $objects[] = $this->componetRegistry[$obj->cname];
                 $alreadyRegistered[] = $obj->cname;
+                
             }
         }
 

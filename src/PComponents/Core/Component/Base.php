@@ -33,7 +33,7 @@ class Base extends \PComponents\Core\Element
         var_dump([$this->cname, 'FS', $this->getExports()]);
         
         $fs->replaceFile(
-                $this->path.'__component/data/exports.php', 
+                $this->path.'_pcd_exports.php', 
                 '<?php '.PHP_EOL. ' return '.var_export($this->getExports(), true).';'
                 );
     }

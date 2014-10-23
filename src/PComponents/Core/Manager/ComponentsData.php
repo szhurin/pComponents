@@ -11,61 +11,100 @@
  * 
  * @author sergey
  */
+
 namespace PComponents\Core\Manager;
+
+use \PComponents\Tools\Path;
 
 abstract class ComponentsData extends Base
 {
+
+    public function getComponentNS($dir)
+    {
+        $path = Path::fixPath($dir);
+
+        if (file_exists($path . '_pcd_settings.php')) {
+            $settings = include($path . '_pcd_settings.php');
+            if (isset($settings['ns'])) {
+                return $settings['ns'];
+            }
+        }
+
+        if (file_exists($path . 'Component.php')) {
+            $cCode   = file_get_contents($path . 'Component.php');
+            $codeArr = explode('namespace ',
+                               $cCode,
+                               2);
+            if (count($codeArr) === 2) {
+                $ns = trim(array_shift(explode(';',
+                                               $codeArr[1],
+                                               2)));
+
+                return $ns;
+            }
+        }
+
+        $cName = \PComponents\Tools\Path::getCurrentDirName($dir);
+
+        return $cName;
+    }
+
     public function registerDirectory($path)
     {
-        $components = array();
+        foreach (new DirectoryIterator($path) as $fileInfo) {
+            if ($fileInfo->isDot() && !$fileInfo->isDir()) {
+                continue;
+            } else {
 
-        if ($handle = opendir($path)) {
-            while (false !== ($entry = readdir($handle))) {
-                if (strpos($entry, '.') === false && $entry !== 'Tests' && $entry !== 'Menu') {
-                    $class = '\\App\\Components\\' . $entry . '\\' . $entry . 'Component';
-                    $this->containerManager->registerComponents(array(
-                        new $class
-                    ));
+                $fpath = $fileInfo->getPathname();
+                $ns    = $this->getComponentNS($fpath);
+                $fname = $fileInfo->getBasename();
+
+                if (file_exists($fpath . '/' . $fname)) {
+                    $class = '\\' . $nc . '\\' . $fileInfo->getBasename('.php');
+                    if (class_exists($class)) {
+
+                        $this->containerManager->registerComponents(array(
+                            $class
+                        ));
+                    }
                 }
             }
-            closedir($handle);
         }
     }
-    
+
     public function updateComponentDirectory($path)
     {
         $components = array();
-        
-        $path = $this->fixPath($path);
-        
-        if(!file_exists($path)){
+
+        $path = Path::fixPath($path);
+
+        if (!file_exists($path)) {
             return false;
         }
 
-        if ($handle = opendir($path)) {
-            while (false !== ($entry = readdir($handle))) {
-                if (strpos($entry, '.') === false) {
-                    
-                    
-                    
-                    $obj = $this->getComponentObject($path.'/'.$entry);
-                    if(empty($obj)){
-                        var_dump(['no Component', $path.'/'.$entry]);
-                        continue;
-                    }
-                    $objects = $this->registerComponents(array(
-                        $obj
-                    ));
-                    
-                    $reg_obj = $objects[0];
-                    $reg_obj->updateCacheExports();
-                    
+        foreach (new DirectoryIterator($path) as $fileInfo) {
+            if ($fileInfo->isDot() && !$fileInfo->isDir()) {
+                continue;
+            } else {
+
+
+                $obj = $this->getComponentObject($path . '/' . $entry);
+                if (empty($obj)) {
+                    var_dump(['no Component', $path . '/' . $entry]);
+                    continue;
                 }
+                $objects = $this->containerManager->registerComponents(array(
+                    $obj
+                ));
+
+                $reg_obj = $objects[0];
+                $reg_obj->updateCacheExports();
             }
-            closedir($handle);
         }
         return true;
     }
+
     /**
      * 
      * @param string $componentDir - the path ro component
@@ -74,38 +113,26 @@ abstract class ComponentsData extends Base
      */
     public function getComponentObject($componentDir)
     {
-        $path = $this->fixPath($componentDir);
-        $parts = explode('/', $path);
-        $name = array_pop($parts);
-        if(empty($name)){
-            $name = array_pop($parts);
-        }
-        
-        $fname = $path. '/'.$name.'Component.php';
-        if(!is_file($fname)){
+        $path = Path::fixPath($componentDir);
+        $name = Path::getCurrentDirName($path);
+
+        $fname = $path . '/' . $name . 'Component.php';
+        if (!is_file($fname)) {
             return false;
         }
-        
-        
-        $obj_code = file_get_contents($fname);
-        
-        $obj_code_parts = explode('namespace', $obj_code);
-        
-        if(count($obj_code_parts)<2){
-            return false;
-        }
-        $namespace = trim(strstr($obj_code_parts[1],';', true));
-        
-         
-        $cname = '\\'. $namespace .'\\'.$name.'Component'; 
-        if(!class_exists($cname)){
-            include $fname;
-            if(!class_exists($cname)){
+        $namespace = $this->getComponentNS($componentDir);
+
+
+        $cname = '\\' . $namespace . '\\' . $name . 'Component';
+        if (!class_exists($cname)) {
+            include_once $fname;
+            if (!class_exists($cname)) {
                 return false;
             }
         }
         $obj = new $cname;
-        
+
         return $obj;
     }
+
 }

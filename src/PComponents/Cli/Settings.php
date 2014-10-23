@@ -33,7 +33,7 @@ class Settings
         
         
         while(!is_file($cur_path.$settingFileName) && $cur_path !== false ){
-            $cur_dir = $this->getCurrentDirName($cur_path);
+            $cur_dir = $path::getCurrentDirName($cur_path);
             $tmp = $path->Up();
             if($tmp !== $cur_path){
                 $cur_path = $tmp;
@@ -62,10 +62,6 @@ class Settings
         return $this->settings;
     }
     
-    public function getCurrentDirName($path)
-    {
-        $tmp = explode('/', trim(str_replace('\'', '/', $path), '/ '));
-        return array_pop($tmp);
-    }
+    
     
 }
