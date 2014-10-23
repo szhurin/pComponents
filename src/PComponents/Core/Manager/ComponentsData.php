@@ -89,9 +89,15 @@ abstract class ComponentsData extends Base
             } else {
 
 
-                $obj = $this->getComponentObject($path . '/' . $entry);
+                $cname = $fileInfo->getBasename();
+                
+                if(empty($cname)){
+                    continue;
+                }
+                
+                $obj = $this->getComponentObject($path . '/' . $cname);
                 if (empty($obj)) {
-                    var_dump(['no Component', $path . '/' . $entry]);
+                    var_dump(['no Component', $path . '/' . $cname]);
                     continue;
                 }
                 $objects = $this->containerManager->registerComponents(array(
