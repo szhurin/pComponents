@@ -132,6 +132,8 @@ abstract class ComponentsData extends Base
             var_dump('ComponentsData including ', $path. '/Component.php');
             include($path . '/Component.php');
             
+        }else{
+            var_dump('ComponentsData NOT including ', $path. '/Component.php');
         }
         include_once($fname);
         $namespace = $this->getComponentNS($componentDir);
