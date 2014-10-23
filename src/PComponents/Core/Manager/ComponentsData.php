@@ -95,9 +95,9 @@ abstract class ComponentsData extends Base
                     continue;
                 }
                 
-                $obj = $this->getComponentObject($path . '/' . $cname);
+                $obj = $this->getComponentObject($path . $cname);
                 if (empty($obj)) {
-                    var_dump(['no Component', $path . '/' . $cname]);
+                    var_dump(['no Component', $path . $cname]);
                     continue;
                 }
                 $objects = $this->containerManager->registerComponents(array(
