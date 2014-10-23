@@ -41,7 +41,7 @@ class Path
     public function setPath($path)
     {
         if(is_string($path)){
-            return $this->path = $self::fixPath($path);
+            return $this->path = self::fixPath($path);
         }else{
             return false;
         }
@@ -60,7 +60,7 @@ class Path
         if(empty($path)){
             $dir = $this->path;
         }else{
-            $dir = $self::fixPath($path, true);
+            $dir = self::fixPath($path, true);
         }
         $tmp = $this->outPath($this->setPath(realpath($dir.'..')));
         return $tmp;
@@ -72,7 +72,7 @@ class Path
         if(empty($path)){
             $dir = $this->path;
         }else{
-            $dir = $self::fixPath($path, true);
+            $dir = self::fixPath($path, true);
         }
         
         return $this->outPath($this->setPath(realpath($dir.$name)));
