@@ -37,14 +37,14 @@ if (!empty($params['--name']) && $params['--name'] !== $cur_dir) {
     $cur_dir = $params['--name'];
     $needToCreateDir = true;
     if($settings['__path'] !== false){
-        $params['--ns'] .= str_replace('/', '\\', $settings['__ns_path']) .'\\'.ucfirst($cur_dir);
+        $params['--ns'] .= str_replace('/', '\\', $settings['__ns_path']) .'\\'.$cur_dir;
     }else{
-        $params['--ns'] .= '\\'.ucfirst($cur_dir);
+        $params['--ns'] .= '\\'.$cur_dir;
     }
     $path .= $cur_dir . '/';
 }
 
-var_dump($settings);
+//var_dump($settings);
 
 
 
