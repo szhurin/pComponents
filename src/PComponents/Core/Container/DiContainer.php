@@ -41,11 +41,12 @@ class DiContainer extends Pimple
     public function offsetGet($id)
     {
         
+        //
+        if(!parent::offsetExists($id)){
+            $man = $this->manager;
+            $man->registerService($id);// returns false if service not found        
+        }        
         return parent::offsetGet($id);
-//        if(!parent::offsetExists($id)){
-//            
-//        }
-        
     }
             
             
