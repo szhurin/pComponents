@@ -30,12 +30,13 @@ class Base extends \PComponents\Core\Element
         /* @var $fs \PComponents\Tools\FileSystem   */
         $fs = $this->getFileSystem($this->path);
         
-        var_dump([$this->cname, 'FS', $this->getExports()]);
+        //var_dump([$this->cname, 'FS', $this->getExports()]);
         
         $fs->replaceFile(
                 $this->path.'_pcd_exports.php', 
                 '<?php '.PHP_EOL. ' return '.var_export($this->getExports(), true).';'
                 );
+        return $this->getExports();
     }
     
     public function getComponentName()
