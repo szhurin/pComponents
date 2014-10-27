@@ -14,6 +14,7 @@ abstract class ComponentRegistration extends ServiceData
 
     private $componetRegistry  = array();    // the array  componentName => component
     private $serviceCollection = array();
+    private $registeredPaths   = array();
 
     /**
      *  registers the array of component directories into container 
@@ -25,7 +26,11 @@ abstract class ComponentRegistration extends ServiceData
     public function registerComponentDirectories(array $paths)
     {
         foreach ($paths as $path) {
-            $dir    = Path::fixPath($path);
+            $dir = Path::fixPath($path);
+            if (!in_array($path,
+                          $this->registeredPaths)) {
+                $this->registeredPaths[] = $path;
+            }
             $sfname = $dir . '_pcd_services.php';
             if (!is_file($sfname)) {
                 $this->updateComponentDirectory($path);
@@ -49,17 +54,31 @@ abstract class ComponentRegistration extends ServiceData
         }
     }
 
+    public function updateRegisteredDirectories()
+    {
+        foreach ($this->registeredPaths as $path) {
+            $this->updateComponentDirectory($path);
+        }
+    }
+
     public function registerService($sname)
     {
         if (!$this->isServiceInCollection($sname)) {
-            $this->setError(
-                    'Service "' . $sname .
-                    '"is not in collection ' . var_export($this->serviceCollection,
-                                                          true),
-                                                          1);
-            return FALSE;
+            $this->updateRegisteredDirectories();
+            if (!$this->isServiceInCollection($sname)) {
+                $this->setError(
+                        'Service "' . $sname .
+                        '"is not in collection ' . var_export($this->serviceCollection,
+                                                              true),
+                                                              1);
+                return FALSE;
+            }
         }
         $cname = $this->getServiceInCollection($sname);
+
+        if (empty($cname)) {
+            
+        }
 
         if (class_exists($cname)) {
             $this->registerComponents(array($cname));
