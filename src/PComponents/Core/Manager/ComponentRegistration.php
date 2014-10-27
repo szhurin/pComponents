@@ -23,7 +23,7 @@ abstract class ComponentRegistration extends ServiceData
      * 
      * @return bool - true if all $paths are registered, false id error occured     
      */
-    public function registerComponentDirectories(array $paths)
+    public function registerComponentDirectories(array $paths, $forceServiceUpdate=false)
     {
         foreach ($paths as $path) {
             $dir = Path::fixPath($path);
@@ -32,11 +32,11 @@ abstract class ComponentRegistration extends ServiceData
                 $this->registeredPaths[] = $path;
             }
             $sfname = $dir . '_pcd_services.php';
-            if (!is_file($sfname)) {
+            if (!is_file($sfname) || $forceServiceUpdate) {
                 $this->updateComponentDirectory($path);
             }
-            $services = include_once $sfname;
-
+            $services = include $sfname;
+            
             $common = array_intersect_assoc($this->serviceCollection,
                                             $services['services']);
             if (!empty($common)) {
@@ -53,7 +53,7 @@ abstract class ComponentRegistration extends ServiceData
                                                    $services['services']);
             
         }
-        sort($this->serviceCollection);
+        
         
     }
 
@@ -67,7 +67,8 @@ abstract class ComponentRegistration extends ServiceData
     public function registerService($sname)
     {
         if (!$this->isServiceInCollection($sname)) {
-            $this->updateRegisteredDirectories();
+            $this->serviceCollection = array();
+            $this->registerComponentDirectories($this->registeredPaths, true);
             if (!$this->isServiceInCollection($sname)) {
                 $this->setError(
                         'Service "' . $sname .

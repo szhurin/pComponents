@@ -81,7 +81,7 @@ abstract class ComponentsData extends Base
      */
     public function updateComponentDirectory($path)
     {
-        $services = array();
+        $services           = array();
         $duplicatedServices = array();
 
         $path = Path::fixPath($path);
@@ -104,34 +104,35 @@ abstract class ComponentsData extends Base
 
             $obj = $this->getComponentObject($path . $cname);
             if (empty($obj)) {
-                $this->setError(['no Component '. $path . $cname]);
+                $this->setError(['no Component ' . $path . $cname]);
                 continue;
             }
             $objects = $this->registerComponents(array(
                 $obj
             ));
 
-            $reg_obj = $objects[0];
+            $reg_obj          = $objects[0];
             $componentExports = array_unique($reg_obj->updateCacheExports());
-            
+
             $cFullName = $reg_obj->cname;
-            
-            foreach ($componentExports as $sname){
-                if(isset($services[$sname])){
-                    $duplicatedServices[$sname]=$cFullName;
-                }else{
-                    $services[$sname]=$cFullName;
+
+            foreach ($componentExports as $sname) {
+                if (isset($services[$sname])) {
+                    $duplicatedServices[$sname] = $cFullName;
+                } else {
+                    $services[$sname] = $cFullName;
                 }
-                
             }
         }
-        
-        file_put_contents($path.'_pcd_services.php', 
-                '<?php return '.var_export(array(
-                    'services'=>$services, 
-                    'duplicates'=>$duplicatedServices, 
-                    ),true).';');
-        
+
+        asort($services);
+        file_put_contents($path . '_pcd_services.php',
+                          '<?php return ' . var_export(array(
+                    'services'   => $services,
+                    'duplicates' => $duplicatedServices,
+                        ),
+                                                       true) . ';');
+
         return true;
     }
 
@@ -151,19 +152,17 @@ abstract class ComponentsData extends Base
             return false;
         }
 
-
-        if (is_file($path . 'Component.php')) {
-            include($path . 'Component.php');
-        } 
-        $cname = '\\' . $namespace . '\\' . $name . 'Component';
-        if(!class_exists($cname)){
-            include_once($fname);
-        }
-        
         $namespace = $this->getComponentNS($componentDir);
 
-       
-        
+        $cname = '\\' . $namespace . '\\' . $name . 'Component';
+        if (!class_exists($cname)) {
+            if (    !class_exists('\\' . $namespace . '\\Component') && 
+                    is_file($path . 'Component.php')) {
+                include_once($path . 'Component.php');
+            }
+            include_once($fname);
+        }
+
         if (!class_exists($cname)) {
             return false;
         }
