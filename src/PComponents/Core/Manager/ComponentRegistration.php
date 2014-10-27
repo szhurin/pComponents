@@ -51,7 +51,10 @@ abstract class ComponentRegistration extends ServiceData
 
             $this->serviceCollection = array_merge($this->serviceCollection,
                                                    $services['services']);
+            
         }
+        sort($this->serviceCollection);
+        
     }
 
     public function updateRegisteredDirectories()
