@@ -23,22 +23,22 @@ class BasicStructure
     public $struc     = array(
         '--samples'                      => array(
             'type'     => 'dir',
-            'contents' => array()
+            'contents' => array('__empty'=>array('type'=>'file', 'contents'=>''))
         ),
         'assets'                         => array(
             'type'     => 'dir',
             'contents' => array(
                 'css'  => array(
                     'type'     => 'dir',
-                    'contents' => array()
+                    'contents' => array('__empty'=>array('type'=>'file', 'contents'=>''))
                 ),
                 'js'   => array(
                     'type'     => 'dir',
-                    'contents' => array()
+                    'contents' => array('__empty'=>array('type'=>'file', 'contents'=>''))
                 ),
                 'html' => array(
                     'type'     => 'dir',
-                    'contents' => array()
+                    'contents' => array('__empty'=>array('type'=>'file', 'contents'=>''))
                 ),
             )
         ),
@@ -71,11 +71,11 @@ class BasicStructure
         ),
         'views'                          => array(
             'type'     => 'dir',
-            'contents' => array()
+            'contents' => array('__empty'=>array('type'=>'file', 'contents'=>''))
         ),
         'tests'                          => array(
             'type'     => 'dir',
-            'contents' => array()
+            'contents' => array('__empty'=>array('type'=>'file', 'contents'=>''))
         ),
         '{{componentName}}Component.php' => array(
             'type'     => 'file',
@@ -148,10 +148,9 @@ class {{componentName}}Component extends Component
  * @author automatic generation tool
  */
 
-namespace {{namespace}}\controllers;
-use {{namespace}};
+namespace {{namespace}}\models;
 
-class sampleModel extends {{componentName}}\Element
+class sampleModel extends {{namespace}}\Element
 {
 
     //{{class_methods}}
@@ -166,9 +165,8 @@ class sampleModel extends {{componentName}}\Element
  */
 
 namespace {{namespace}}\controllers;
-use {{namespace}};
 
-class sampleController extends {{componentName}}\Element
+class sampleController extends {{namespace}}\Element
 {
 
     //{{class_methods}}
