@@ -18,12 +18,13 @@ class TextConverter
 {
 
     static $lowDashArray = null;
-
-    static public function replaceArray()
+    
+    
+    static public function replaceArray( $dash_str = '_')
     {
         if (empty(self::$lowDashArray)) {
-            self::$lowDashArray = array_map(function($ch) {
-                return '_' . $ch;
+            self::$lowDashArray = array_map(function($ch) use($dash_str) {
+                return $dash_str . $ch;
             }, range('a', 'z'));
         }
         return self::$lowDashArray;
@@ -33,19 +34,19 @@ class TextConverter
      *  
      */
 
-    static public function lodashToCamel($str)
+    static public function lodashToCamel($str, $dash_str = '_')
     {
 
-        $lookfor = self::replaceArray();
+        $lookfor = self::replaceArray($dash_str);
         return str_replace($lookfor, range('A', 'Z'), $str);
     }
 
-    static public function camelToLodash($str, $skipfirst = true)
+    static public function camelToLodash($str, $skipfirst = true, $dash_str = '_')
     {
         if ($skipfirst) {
             $str = lcfirst($str);
         }
-        $replaceTo = self::replaceArray();
+        $replaceTo = self::replaceArray($dash_str);
         return str_replace(range('A', 'Z'), $replaceTo, $str);
     }
 
