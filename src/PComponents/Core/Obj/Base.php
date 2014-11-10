@@ -93,14 +93,26 @@ class Base
     }
     
     
-    
-    public function lodashToCamel($str)
+    /**
+     * 
+     * @param string $str - string to convert
+     * @param string $dash_str - the type of string to us as lowdash
+     * @return string
+     */
+    public function lodashToCamel($str, $dash_str='_')
     {
-        return Tools\TextConverter::lodashToCamel($str);        
+        return Tools\TextConverter::lodashToCamel($str, $dash_str);        
     }
-    public function camelToLodash($str, $skipfirst = true)
+    /**
+     * 
+     * @param string $str - string to convert
+     * @param bool $skipfirst - true if no need test first char for capital case
+     * @param string $dash_str - the type of string to us as lowdash
+     * @return string
+     */
+    public function camelToLodash($str, $skipfirst = true, $dash_str='_')
     {
-        return Tools\TextConverter::camelToLodash($str, $skipfirst); 
+        return Tools\TextConverter::camelToLodash($str, $skipfirst, $dash_str);
     }
     
     public function reloadTo($path)
